@@ -1,0 +1,28 @@
+[
+
+  {
+    "label": "Fried Stuff",
+    "id": 200,
+    "parentId": 100
+  },
+  {
+    "label": "Onion Rings",
+    "id": 20,
+    "parentId": 200
+  },
+  {
+    "label": "Pasta",
+    "id": 21,
+    "parentId": 100
+  },
+  {
+    "label": "Tater Tots",
+    "id": 23,
+    "parentId": 200
+  },
+  {
+    "label": "Starch",
+    "id": 100,
+    "parentId": 0
+  }
+]
