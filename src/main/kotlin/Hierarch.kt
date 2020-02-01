@@ -1,6 +1,20 @@
-import com.squareup.moshi.*
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonClass
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import java.lang.reflect.Array.get
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.MutableList
+import kotlin.collections.MutableSet
+import kotlin.collections.Set
+import kotlin.collections.forEach
+import kotlin.collections.getValue
+import kotlin.collections.map
+import kotlin.collections.mutableListOf
+import kotlin.collections.mutableMapOf
+import kotlin.collections.mutableSetOf
+import kotlin.collections.set
 
 class Hierarch {
 
@@ -12,14 +26,27 @@ class Hierarch {
         }
     }
 
-    data class ReferenceItem (val label: String, val id: Int, val parentId: Int, val children: MutableList<ReferenceItem> = mutableListOf())
+    data class ReferenceItem(
+        val label: String,
+        val id: Int,
+        val parentId: Int,
+        val children: MutableList<ReferenceItem> = mutableListOf()
+    ) {
+        fun prettyPrint(nest: Int = 0): String {
+            var tabs = ""
+            for (i in 0..nest) {
+                tabs += "\t"
+            }
+            return tabs + "$label ($id)" + "\n" + children.map { it.prettyPrint(nest + 1) } + "\n"
+        }
+    }
 
-    val moshi = Moshi.Builder()
+    private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()
 
-    val type = Types.newParameterizedType(List::class.java, Node::class.java)
-    val jsonAdapter: JsonAdapter<List<Node>> = moshi.adapter(type)
+    private val type = Types.newParameterizedType(List::class.java, Node::class.java)
+    private val jsonAdapter: JsonAdapter<List<Node>> = moshi.adapter(type)
 
     fun readData(): List<Node> {
         val dataIn = javaClass.classLoader.getResourceAsStream("hierarchy.json")
@@ -54,8 +81,8 @@ class Hierarch {
     fun depthFirst(node: Node, map: Map<Int, Set<Node>>): ReferenceItem {
         val item = ReferenceItem(node.label, node.id, node.parentId)
 
-        map[node.id]!!.forEach { node ->
-            item.children.add(depthFirst(node, map))
+        map.getValue(node.id).forEach { child ->
+            item.children.add(depthFirst(child, map))
         }
 
         return item

@@ -1,5 +1,3 @@
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class HierarchyTest {
@@ -17,6 +15,9 @@ class HierarchyTest {
         val data = hier.readData()
         val parents = hier.establishParents(data)
         assert(parents.isNotEmpty())
+        assert(parents.getValue(50).size == 1)
+        assert(parents.getValue(100).size == 2)
+        assert(parents.getValue(200).size == 2)
     }
 
     @Test
@@ -30,8 +31,8 @@ class HierarchyTest {
                 hier.depthFirst(it, parents)
             }.toList()
 
-        println(finalHier)
+        finalHier.forEach { println(it.prettyPrint()) }
 
-        assertTrue(finalHier.isNotEmpty())
+        assert(finalHier.size == 1)
     }
 }
