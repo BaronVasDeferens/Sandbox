@@ -1,5 +1,4 @@
 [
-
   {
     "label": "Fried Stuff",
     "id": 200,
@@ -23,6 +22,11 @@
   {
     "label": "Starch",
     "id": 100,
+    "parentId": 50
+  },
+  {
+    "label": "Food",
+    "id": 50,
     "parentId": 0
   }
 ]

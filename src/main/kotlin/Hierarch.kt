@@ -6,11 +6,13 @@ class Hierarch {
 
     @JsonClass(generateAdapter = true)
     data class Node(val label: String, val id: Int, val parentId: Int) {
-        val hasParent = parentId != 0
+        val hasParent = (parentId != 0)
         override fun toString(): String {
             return "$label ($id) (parent=$parentId)"
         }
     }
+
+    data class ReferenceItem (val label: String, val id: Int, val parentId: Int, val children: MutableList<ReferenceItem> = mutableListOf())
 
     val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
@@ -47,6 +49,16 @@ class Hierarch {
         }
 
         return parentMap
+    }
+
+    fun depthFirst(node: Node, map: Map<Int, Set<Node>>): ReferenceItem {
+        val item = ReferenceItem(node.label, node.id, node.parentId)
+
+        map[node.id]!!.forEach { node ->
+            item.children.add(depthFirst(node, map))
+        }
+
+        return item
     }
 
 }
